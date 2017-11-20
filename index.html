@@ -1,0 +1,199 @@
+
+<head>
+    <title>Hangman Game</title>
+    <link rel="stylesheet" type="text/css" href="assets/page.css">
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+</head>
+<body>
+
+      <div class="jumbotron">
+
+    <h1 class="text-center">Let's Play Shoes Hangman!</h1>
+
+    <div class="text-center">
+
+    <img src="assets/shoes-icon.png" alt="Shoes" width="200" height="200">
+
+    </div>
+
+    <div class='letterSection'> 
+      <div class='hang-container'>
+        <div class='hanger-top'></div>
+        <div class='hanger-left'></div>
+    
+        <div class='draw-section'>
+          <div class='noose'></div>
+        </div>
+    
+        <div class='hanger-base'></div>
+      </div>
+      <div class='side-container'>
+        <div class='container-title'>Guess A Letter!</div>
+        <div class='input-area'>
+          <input id='letter-input' type='text' maxlength='1'/>
+        </div>
+      </div>
+    
+      <div class='side-container'>
+        <div class='container-title'>Guessed Letters</div>
+        <div id="wrong-letters" class='input-area'></div>
+      </div>
+    </div>
+
+    <div class='statusSection'>
+
+           <div class='wins'>
+            <div class='wins-title'>Number of Wins</div>
+            <div class='total-wins'>
+            </div>
+        </div>
+
+        <div class='guesses'>
+            <div class='guesses-title'>Available Guesses</div>
+            <div class='avail-guesses'>
+            </div>
+        </div>
+
+        <div class='word-box'>
+            <div class='wordBox-title'>Shoe Name</div>
+            <div class='word-display'>
+            </div>
+    </div>
+    </div>
+
+    <script>
+
+    var words = ['stilleto', 'clog', 'bootie', 'mule', 'creeper', 'moccasin', 'brogue', 'wedge', 'sandal', 'slingback'];
+
+    //var availGuesses = 10;
+
+function chooseWord () {
+    return words[Math.floor(Math.random() * words.length)];
+}
+
+function blanksFromAnswer ( answerWord ) {  
+    var result = ""; 
+    for ( var i in answerWord ) {
+        result = "_" + result;
+    }
+    return result;
+}
+function alterAt ( n, c, originalString ) {
+    return originalString.substr(0,n) + c + originalString.substr(n+1,originalString.length);
+}
+function guessLetter( letter, shown, answer ) {
+    var checkIndex = 0;
+    
+    checkIndex = answer.indexOf(letter);
+    while ( checkIndex >= 0 ) {
+        shown = alterAt( checkIndex, letter, shown );
+        checkIndex = answer.indexOf(letter, checkIndex + 1);
+    }
+    return shown;
+}
+
+function resetGame () {
+    resetUI();
+    gameAnswer = chooseWord();
+    gameShownAnswer = blanksFromAnswer(gameAnswer);
+    hangmanState = 0;
+    //document.getElementById('guesses-left').innerHTML=availGuesses;
+    drawWord(gameShownAnswer);    
+}
+$(document).ready(resetGame);
+function win () { alert('You win!  Winning word is' + ' '+ gameAnswer +'!');  resetGame() ;}
+console.log(alert);
+function lose () { alert('Bummer!  Winning word was' + ' '+ gameAnswer +'!'); resetGame(); }
+function doKeypress () {
+    var tempChar = $('#letter-input').val().toLowerCase();
+    var tempString = "";
+    $('#letter-input').val("");
+    
+    // Write here!
+    tempString = guessLetter( tempChar, gameShownAnswer, gameAnswer );
+    if ( tempString != gameShownAnswer ) {
+        updateWord( tempString );
+        gameShownAnswer = tempString;
+        if ( gameShownAnswer === gameAnswer ) {
+            win();
+
+        }
+    } else {
+        wrongLetter(tempChar);
+        drawSequence[ hangmanState++ ]();
+        if ( hangmanState === drawSequence.length ) {
+        	                    //if ( ".guesses-left" < 1) {
+            lose();
+        }
+    }  
+}
+$('#letter-input').keyup( doKeypress );
+
+function drawHead () {
+ $('.draw-section').append( $('<div/>').addClass("body-part head") );
+}
+function drawTorso () {
+ $('.draw-section').append(
+     $('<div/>').addClass("body-part armbox").append(
+          $('<div/>').addClass("body-part torso")));
+  $('.draw-section').append(
+      $('<div/>').addClass("body-part legbox").append(
+          $('<div/>').addClass("body-part pelvis")));
+}
+function drawLeftArm () {
+ $('.armbox').prepend( $('<div/>').addClass("body-part leftarm") );
+}
+function drawRightArm () {
+ $('.armbox').prepend( $('<div/>').addClass("body-part rightarm") );   
+}
+function drawLeftLeg () {
+ $('.legbox').prepend( $('<div/>').addClass("body-part leftleg") );   
+}
+function drawRightLeg() {
+ $('.legbox').prepend( $('<div/>').addClass("body-part rightleg") );   
+}
+  var drawSequence = [ drawHead,drawTorso,drawLeftArm,drawRightArm,drawLeftLeg,drawRightLeg ];
+  function wrongLetter ( letter ) {
+    $('#wrong-letters').append(
+        $('<span/>').addClass('guessed-letter').text(letter));
+         // $('#guesses-left').html(function(i, availGuesses) {
+         //   return availGuesses*1-1 });
+
+};
+
+
+function resetUI () {
+    $('.body-part').remove();
+    $('.guessed-letter').remove();
+    $('.shown-letter').remove();
+    $('.guesses-left').remove();
+}
+
+function drawWord( answer ) {
+    for ( i in answer ) {
+  $('.word-display').append(
+      $('<span/>').addClass('shown-letter').html('&nbsp;'));
+    }
+}
+function updateWord( answer ) {
+    $k = $('.shown-letter:first');
+    for ( i in answer ) {
+  if ( answer.charAt(i) != '_' ) {
+      $k.text( answer.charAt(i) );
+  } else { 
+      $k.html('&nbsp;');
+  }
+  $k = $k.next();
+    }
+}
+
+
+
+</script>
+
+</body>
+</html>
