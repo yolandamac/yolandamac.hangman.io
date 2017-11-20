@@ -16,14 +16,28 @@
 
     <div class="text-center">
 
+    	<p> Type a letter in the "Guess a Letter" box to begin the game </p>
+
     <img src="assets/shoes-icon.png" alt="Shoes" width="200" height="200">
 
     </div>
 
     <div class='letterSection'> 
       <div class='hang-container'>
-        <div class='hanger-top'></div>
-        <div class='hanger-left'></div>
+
+      	    <div class='guesses'>
+            <div class='guesses-title'>Available Guesses</div>
+            <div class='avail-guesses' id='guesses-left'>
+            </div>
+        </div>
+
+
+         <div class='wins'>
+            <div class='wins-title'>Number of Wins</div>
+            <div class='total-wins' id='totalWins'>
+            </div>
+        </div>
+
     
         <div class='draw-section'>
           <div class='noose'></div>
@@ -46,18 +60,6 @@
 
     <div class='statusSection'>
 
-           <div class='wins'>
-            <div class='wins-title'>Number of Wins</div>
-            <div class='total-wins'>
-            </div>
-        </div>
-
-        <div class='guesses'>
-            <div class='guesses-title'>Available Guesses</div>
-            <div class='avail-guesses'>
-            </div>
-        </div>
-
         <div class='word-box'>
             <div class='wordBox-title'>Shoe Name</div>
             <div class='word-display'>
@@ -69,7 +71,9 @@
 
     var words = ['stilleto', 'clog', 'bootie', 'mule', 'creeper', 'moccasin', 'brogue', 'wedge', 'sandal', 'slingback'];
 
-    //var availGuesses = 10;
+    var availGuesses = 10;
+    var guesses = [];
+    var totalWins = 0;
 
 function chooseWord () {
     return words[Math.floor(Math.random() * words.length)];
@@ -82,6 +86,7 @@ function blanksFromAnswer ( answerWord ) {
     }
     return result;
 }
+
 function alterAt ( n, c, originalString ) {
     return originalString.substr(0,n) + c + originalString.substr(n+1,originalString.length);
 }
@@ -98,23 +103,36 @@ function guessLetter( letter, shown, answer ) {
 
 function resetGame () {
     resetUI();
+    availGuesses=10;
+    guesses=[];
     gameAnswer = chooseWord();
     gameShownAnswer = blanksFromAnswer(gameAnswer);
     hangmanState = 0;
-    //document.getElementById('guesses-left').innerHTML=availGuesses;
+    document.getElementById('guesses-left').innerHTML=availGuesses;
     drawWord(gameShownAnswer);    
 }
+
 $(document).ready(resetGame);
-function win () { alert('You win!  Winning word is' + ' '+ gameAnswer +'!');  resetGame() ;}
+function win () { 
+totalWins += 1;
+document.getElementById('totalWins').innerHTML=totalWins;
+	alert('You win!  Winning word is' + ' '+ gameAnswer +'!');  resetGame() ;
+}
 console.log(alert);
 function lose () { alert('Bummer!  Winning word was' + ' '+ gameAnswer +'!'); resetGame(); }
+
 function doKeypress () {
     var tempChar = $('#letter-input').val().toLowerCase();
     var tempString = "";
     $('#letter-input').val("");
     
-    // Write here!
     tempString = guessLetter( tempChar, gameShownAnswer, gameAnswer );
+    
+console.log(tempString);
+
+var isUnique = IsUniqueLetter(tempChar);
+console.log(isUnique);
+if(isUnique){
     if ( tempString != gameShownAnswer ) {
         updateWord( tempString );
         gameShownAnswer = tempString;
@@ -124,18 +142,24 @@ function doKeypress () {
         }
     } else {
         wrongLetter(tempChar);
-        drawSequence[ hangmanState++ ]();
-        if ( hangmanState === drawSequence.length ) {
-        	                    //if ( ".guesses-left" < 1) {
-            lose();
-        }
     }  
 }
+}
+function IsUniqueLetter(letter){
+	console.log(letter);
+var index = guesses.indexOf(letter);
+console.log(index);
+return index < 0;
+
+}
+
+
 $('#letter-input').keyup( doKeypress );
 
 function drawHead () {
  $('.draw-section').append( $('<div/>').addClass("body-part head") );
 }
+
 function drawTorso () {
  $('.draw-section').append(
      $('<div/>').addClass("body-part armbox").append(
@@ -157,11 +181,22 @@ function drawRightLeg() {
  $('.legbox').prepend( $('<div/>').addClass("body-part rightleg") );   
 }
   var drawSequence = [ drawHead,drawTorso,drawLeftArm,drawRightArm,drawLeftLeg,drawRightLeg ];
+  
   function wrongLetter ( letter ) {
-    $('#wrong-letters').append(
-        $('<span/>').addClass('guessed-letter').text(letter));
-         // $('#guesses-left').html(function(i, availGuesses) {
-         //   return availGuesses*1-1 });
+guesses.push(letter);
+    $('#wrong-letters').append($('<span/>').addClass('guessed-letter').text(letter));
+
+
+	if(availGuesses > 1)
+	{
+	    availGuesses = availGuesses-1;
+	    document.getElementById('guesses-left').innerHTML=availGuesses;
+	}
+	 else{
+		document.getElementById('guesses-left').innerHTML=0;
+	    lose();
+	 }
+
 
 };
 
@@ -174,9 +209,10 @@ function resetUI () {
 }
 
 function drawWord( answer ) {
+	
     for ( i in answer ) {
-  $('.word-display').append(
-      $('<span/>').addClass('shown-letter').html('&nbsp;'));
+
+  	$('.word-display').append($('<span/>').addClass('shown-letter').html('&nbsp;'));
     }
 }
 function updateWord( answer ) {

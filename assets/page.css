@@ -20,7 +20,7 @@ h1 .text-center{
     background:#f1f1f1;
     height:auto;
 }
-/* For the left 'Guess A Letter!' and 'Guessed Letter' boxes. */
+
 .side-container {
     margin-top:45px;
     margin-left:130px;
@@ -54,9 +54,9 @@ h1 .text-center{
 }
 .wordBox-title {
     color:#6f5a2d;
-    margin-top: 30px;
+    margin-top: -75px;
 }
-/* Word Box */
+
 .word-box {
     width:250px;
     margin:auto;
@@ -78,7 +78,7 @@ h1 .text-center{
 .wins {
     width:250px;
     margin:auto;
-    margin-top:-60px;
+    margin-top: 50px;
     text-align:center;
 }
 .total-wins {
@@ -92,7 +92,7 @@ h1 .text-center{
 }
 .guesses-title {
     color:#6f5a2d;
-    margin-top: 30px;
+    margin-top: 75px;
 }
 .guesses {
     width:250px;
@@ -110,11 +110,11 @@ h1 .text-center{
 
 #guesses-left {
     color:#792c15;
-    width:20pt;
+    width:75px;
     font-size:14pt;
     text-align:center;
     display: inline-block;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 .shown-letter {
     border-bottom: 3px #000 solid;
@@ -130,84 +130,9 @@ h1 .text-center{
     height:205px;
     float:right;
 }
-.hanger-top {
-    width:108px;
-    height:5px;
-    background:#332915;
-}
-.hanger-left {
-    width:5px;
-    height:200px;
-    background:#332915;
-    float:left;
-}
-.hanger-base {
-    width:150px;
-    height:5px;
-    background:#332915;
-}
+
 .draw-section {
     width:200px;
     height:200px;
     text-align:center;
-}
-.noose {
-    margin:auto;
-    height:25px;
-    width:5px;
-    background:#a59885;
-}
-.head {
-    margin:auto;
-    height:30px;
-    width:30px;
-    background:#000;
-    -webkit-border-radius: 15px;
-    -moz-border-radius:15px;
-    border-radius:15px;
-}
-.armbox {
-    margin:auto;
-    width:100px;
-}
-.leftarm {
-    float:left;
-    height:10px;
-    width:45px;
-    background:#000;
-}
-.rightarm {
-    float:right;
-    height:10px;
-    width:45px;
-    background:#000;
-}
-.torso {
-    margin:auto;
-    width:10px;
-    height:50px;
-    background:#000;
-}
-.legbox {
-    margin:auto;
-    height:60px;
-    width:30px;
-}
-.leftleg {
-    float:left;
-    width:10px;
-    height:60px;
-    background:#000;
-}
-.rightleg {
-    float:right;
-    width:10px;
-    height:60px;
-    background:#000;
-}
-.pelvis {
-    margin:auto;
-    height:10px;
-    width:10px;
-    background:#000;
 }
